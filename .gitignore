@@ -1,0 +1,10 @@
+.idea
+logs
+*.log
+*.txt
+bower_components
+node_modules/
+releases
+dist
+config.json
+test.js
