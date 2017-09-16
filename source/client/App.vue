@@ -2,8 +2,13 @@
     <v-app toolbar>
         <v-toolbar>
             <v-toolbar-title>{{title}}</v-toolbar-title>
-            <v-icon>fa-user fa-lg</v-icon>
-            <v-btn class="btnClose" @click="close" fab  warning>
+            <v-spacer></v-spacer>
+            <v-icon v-if="isAuth">fa-user</v-icon>
+            <v-toolbar-title v-if="isAuth">{{user.username}}</v-toolbar-title>
+            <v-btn v-if="isAuth" class="button mr-2 ml-2" @click.stop="logout" fab error>
+                <v-icon>fa-sign-out</v-icon>
+            </v-btn>
+            <v-btn class="button" @click.stop="close" fab warning>
                 <v-icon>fa-close</v-icon>
             </v-btn>
         </v-toolbar>
@@ -16,7 +21,7 @@
     export default {
         data() {
             return {
-                title: `FastBit v${remote.app.getVersion()}`
+                title: `FastBit Pro v${remote.app.getVersion()}`
             }
         },
         computed: {
@@ -25,6 +30,9 @@
             },
             isAuth() {
                 return !!this.$store.state.authUser;
+            },
+            user() {
+                return this.$store.state.authUser;
             }
         },
         methods: {
@@ -32,12 +40,21 @@
                 localStorage.removeItem('authUser');
                 this.$store.commit('SET_AUTH', null);
                 this.$router.push('/login');
-
             },
             close() {
                 let window = remote.getCurrentWindow();
-                if (window)
-                    window.close();
+
+                remote.dialog.showMessageBox(window, {
+                    type: 'question',
+                    buttons: ['Yes', 'No'],
+                    title: 'FastBit',
+                    message: 'Do you really want to quit?'
+                }, function (res) {
+                    if (res === 0) {
+                        if (window)
+                            window.close();
+                    }
+                })
             }
         }
     }
@@ -60,14 +77,7 @@
         margin: 0;
     }
 
-    .btnLogout {
-        position: absolute;
-        left: 855px;
-    }
-
-    .btnClose {
-        position: absolute;
-        left: 955px;
+    .button {
         min-width: 0;
         width: 35px;
         height: 35px;

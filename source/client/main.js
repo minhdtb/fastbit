@@ -7,6 +7,7 @@ import App from './App.vue'
 import Home from './pages/home.vue'
 import Login from './pages/login.vue'
 import Register from './pages/register.vue'
+import Key from './pages/key.vue'
 import axios from 'axios'
 
 Vue.use(VueRouter);
@@ -16,6 +17,7 @@ Vue.use(Vuetify);
 const routes = [
     {path: '/login', component: Login},
     {path: '/register', component: Register},
+    {path: '/key', component: Key},
     {path: '/', component: Home}
 ];
 
@@ -47,7 +49,8 @@ const store = new Vuex.Store({
     }
 });
 
-const isAuthRoute = route => route.fullPath.indexOf('/login') !== -1 || route.fullPath.indexOf('/register') !== -1;
+const isAuthRoute = route => route.fullPath.indexOf('/login') !== -1 ||
+    route.fullPath.indexOf('/register') !== -1;
 const loadFromLocalStorage = () => {
     if (localStorage) {
         let user = JSON.parse(localStorage.getItem('authUser'));

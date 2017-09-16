@@ -5,7 +5,7 @@
                 <v-card style="padding: 25px; text-align: center">
                     <v-layout row>
                         <v-flex sm12>
-                            <img src="static/images/logo.png" style="width: 180px">
+                            <img src="static/images/logo.svg" style="width: 180px">
                             <v-text-field label="Username" placeholder="Username" @blur="blur" @focus="focus"
                                           v-model="username" :rules="[rules.username]" prepend-icon="fa-user fa-lg"
                                           v-on:keyup.native.enter.prevent="submit">
