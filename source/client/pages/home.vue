@@ -13,7 +13,7 @@
                         </v-icon>
                         {{ tab }}
                     </v-tabs-item>
-                    <v-tabs-slider class="yellow"></v-tabs-slider>
+                    <v-tabs-slider class="error"></v-tabs-slider>
                 </v-tabs-bar>
                 <v-tabs-items>
                     <v-tabs-content id="dashboard">

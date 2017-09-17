@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
+import * as moment from 'moment'
 
 import App from './App.vue'
 import Home from './pages/home.vue'
@@ -42,6 +43,7 @@ export const setSettings = (settings) => {
 const store = new Vuex.Store({
     state: {
         authUser: null,
+        items: [],
         config: {
             apiKey: null,
             apiSecret: null
@@ -66,6 +68,9 @@ const store = new Vuex.Store({
         },
         SET_CONFIG(state, config) {
             state.config = config;
+        },
+        SET_ITEMS(state, items) {
+            state.items = items;
         }
     },
     getters: {

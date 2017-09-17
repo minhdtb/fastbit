@@ -36,7 +36,7 @@ let rendererConfig = {
             },
             {
                 test: /\.js$/,
-                use: 'babel-loader',
+                loaders: ['shebang-loader', 'babel-loader'],
                 exclude: /node_modules/
             },
             {
@@ -107,8 +107,7 @@ let rendererConfig = {
     resolve: {
         alias: {
             '@': path.join(__dirname, '../source/client'),
-            'vue$': 'vue/dist/vue.esm.js',
-            'vue$': 'vue/dist/vue.esm.js',
+            'vue$': 'vue/dist/vue.esm.js'
         },
         extensions: ['.js', '.vue', '.json', '.css', '.node']
     },

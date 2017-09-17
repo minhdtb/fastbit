@@ -104,6 +104,7 @@
     "json-loader": "^0.5.4",
     "multispinner": "^0.2.1",
     "rimraf": "^2.6.1",
+    "shebang-loader": "0.0.1",
     "style-loader": "^0.18.1",
     "ts-loader": "^2.3.3",
     "typescript": "^2.4.2",
