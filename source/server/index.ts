@@ -88,13 +88,12 @@ const updateTable = () => {
                 lastPrice: sum.Last,
                 high: sum.High,
                 low: sum.Low,
-                spread: 0,
                 added: moment(sum.Created).format('YYYY/MM/DD')
             })
         });
 
         mainWindow.webContents.send('market:summaries', items);
-    });
+    }).catch();
 
     setTimeout(function () {
         updateTable();

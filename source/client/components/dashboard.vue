@@ -6,11 +6,11 @@
                           v-bind:pagination.sync="pagination" hide-actions class="elevation-2">
                 <template slot="items" scope="props">
                     <td>
-                        <router-link :to="'/' + props.item.market">{{ props.item.market }}</router-link>
+                        <a href="#" @click.stop="click">{{ props.item.market }}</a>
                     </td>
                     <td class="">{{ props.item.currency }}</td>
                     <td class="text-xs-right">{{ props.item.volume }}</td>
-                    <td v-if="props.item.change24 < 0" class="text-xs-right error--text">{{ props.item.change24 }}<v-icon error>fa-arrow-down fa-1</v-icon></td>
+                    <td v-if="props.item.change24 <= 0" class="text-xs-right error--text">{{ props.item.change24 }}<v-icon error>fa-arrow-down fa-1</v-icon></td>
                     <td v-else="" class="text-xs-right green--text">{{ props.item.change24 }}<v-icon class="green--text">fa-arrow-up fa-1</v-icon></td>
                     <td class="text-xs-right">{{ props.item.change }}</td>
                     <td class="text-xs-right">{{ props.item.lastPrice }}</td>
@@ -61,6 +61,13 @@
         },
         mounted() {
             ipcRenderer.on('market:summaries', (e, items) => this.$store.commit('SET_ITEMS', items))
+        },
+        methods: {
+            click(e) {
+                let market = e.target.innerText;
+                this.$store.commit('SET_MARKET', market);
+                this.$store.commit('SET_TAB', 'fastbit');
+            }
         }
     }
 </script>

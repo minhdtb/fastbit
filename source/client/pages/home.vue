@@ -3,15 +3,14 @@
         <v-flex sm12>
             <v-tabs dark v-model="active">
                 <v-tabs-bar class="warning">
-                    <v-tabs-item :disabled="tab === 'configuration'? isRunning: false" v-for="tab in tabs"
-                                 :key="tab" :href="'#' + tab" ripple>
-                        <v-icon v-if="tab === 'dashboard'" style="margin-top: 3px">
+                    <v-tabs-item  v-for="tab in tabs" :key="tab.id" :href="'#' + tab.id" ripple>
+                        <v-icon v-if="tab.id === 'dashboard'" style="margin-top: 3px">
                             fa-home fa-lg fa-fw
                         </v-icon>
                         <v-icon v-else style="margin-top: 3px">
                             fa-cog fa-lg fa-fw
                         </v-icon>
-                        {{ tab }}
+                        {{ tab.text }}
                     </v-tabs-item>
                     <v-tabs-slider class="error"></v-tabs-slider>
                 </v-tabs-bar>
@@ -19,7 +18,7 @@
                     <v-tabs-content id="dashboard">
                         <dashboard></dashboard>
                     </v-tabs-content>
-                    <v-tabs-content id="configuration" style="height: 550px">
+                    <v-tabs-content id="fastbit">
                         <fastbit></fastbit>
                     </v-tabs-content>
                 </v-tabs-items>
@@ -40,12 +39,26 @@
         },
         data() {
             return {
-                tabs: ['dashboard', 'fast trade'],
+                tabs: [{
+                    text: 'dashboard',
+                    id: 'dashboard'
+                }, {
+                    text: 'fast trade',
+                    id: 'fastbit'
+                }],
                 version: remote.app.getVersion(),
-                active: null
             }
         },
-        computed: {},
+        computed: {
+            active: {
+                get() {
+                    return this.$store.state.active;
+                },
+                set(val) {
+                    this.$store.commit('SET_TAB', val)
+                }
+            }
+        },
         beforeMount() {
             let config = getSettings();
             if (config && config.apiKey && config.apiSecret) {
@@ -55,7 +68,6 @@
             }
         },
         mounted() {
-
         },
         methods: {}
     }

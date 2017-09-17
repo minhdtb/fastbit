@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
-import * as moment from 'moment'
 
 import App from './App.vue'
 import Home from './pages/home.vue'
@@ -47,7 +46,9 @@ const store = new Vuex.Store({
         config: {
             apiKey: null,
             apiSecret: null
-        }
+        },
+        active: null,
+        market: 'BTC-ETH'
     },
     actions: {
         LOGIN({commit}, credentials) {
@@ -71,6 +72,12 @@ const store = new Vuex.Store({
         },
         SET_ITEMS(state, items) {
             state.items = items;
+        },
+        SET_TAB(state, tab) {
+            state.active = tab;
+        },
+        SET_MARKET(state, market) {
+            state.market = market;
         }
     },
     getters: {
