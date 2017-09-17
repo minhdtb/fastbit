@@ -9,6 +9,8 @@ import Login from './pages/login.vue'
 import Register from './pages/register.vue'
 import Key from './pages/key.vue'
 import axios from 'axios'
+import * as fs from 'fs'
+import {remote} from 'electron'
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -23,23 +25,47 @@ const routes = [
 
 const router = new VueRouter({routes});
 
-const API_URL = 'http://45.76.212.117:3000/api';
+const MAIN_CONFIG = remote.app.getPath('userData') + '/config_main.json';
+const API_URL = 'http://127.0.0.1:3000/api';
+
+export const getSettings = () => {
+    if (fs.existsSync(MAIN_CONFIG)) {
+        return JSON.parse(fs.readFileSync(MAIN_CONFIG, 'utf8').toString());
+    } else
+        return {};
+};
+
+export const setSettings = (settings) => {
+    fs.writeFileSync(MAIN_CONFIG, JSON.stringify(settings), 'utf8');
+};
 
 const store = new Vuex.Store({
     state: {
-        authUser: null
+        authUser: null,
+        config: {
+            apiKey: null,
+            apiSecret: null
+        }
     },
     actions: {
-        LOGIN(state, credentials) {
-            return axios.post(`${API_URL}/login`, credentials);
+        LOGIN({commit}, credentials) {
+            return axios.post(`${API_URL}/login`, credentials)
+                .then((response) => {
+                    let data = response.data;
+                    localStorage.setItem('authUser', JSON.stringify(data.user));
+                    commit('SET_AUTH', data.user);
+                });
         },
-        REGISTER(state, credentials) {
+        REGISTER({}, credentials) {
             return axios.post(`${API_URL}/register`, credentials);
         }
     },
     mutations: {
         SET_AUTH(state, user) {
             state.authUser = user;
+        },
+        SET_CONFIG(state, config) {
+            state.config = config;
         }
     },
     getters: {

@@ -8,7 +8,7 @@ const log = require('electron-log');
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 
-const WINDOW_WIDTH = 1100;
+const WINDOW_WIDTH = 1200;
 const WINDOW_HEIGHT = 725;
 
 let mainWindow;
