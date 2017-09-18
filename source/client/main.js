@@ -48,7 +48,8 @@ const store = new Vuex.Store({
             apiSecret: null
         },
         active: null,
-        market: 'BTC-ETH'
+        market: 'BTC-ETH',
+        volume: 0
     },
     actions: {
         LOGIN({commit}, credentials) {

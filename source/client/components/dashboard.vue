@@ -72,7 +72,7 @@
     }
 </script>
 <style>
-    .table thead th {
+    .table th {
         font-weight: 700;
         font-size: 11px;
         transition: .3s cubic-bezier(.25, .8, .5, 1);
@@ -80,7 +80,8 @@
         -webkit-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
-        user-select: none
+        user-select: none;
+        background-color: #f4f4f4;
     }
 
     .table {
@@ -88,11 +89,16 @@
         border: 1px solid #c6c6c6;
     }
 
-    table tr {
+    .datatable__progress tr {
+        height: 3px !important;
+    }
+
+    thead tr {
+        height: 35px !important;
         line-height: 10px !important;
     }
 
-    table, th, td {
+    th, td {
         border: 1px solid #c6c6c6;
         padding: 0 5px !important;
     }
