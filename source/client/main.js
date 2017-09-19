@@ -49,7 +49,10 @@ const store = new Vuex.Store({
         },
         active: null,
         market: 'BTC-ETH',
-        volume: 0
+        balance: 0,
+        items1:[],
+        items2:[],
+        items3:[]
     },
     actions: {
         LOGIN({commit}, credentials) {
@@ -79,6 +82,18 @@ const store = new Vuex.Store({
         },
         SET_MARKET(state, market) {
             state.market = market;
+        },
+        SET_BALANCE(state, balance) {
+            state.balance = balance;
+        },
+        SET_ITEMS1(state, items) {
+            state.items1 = items;
+        },
+        SET_ITEMS2(state, items) {
+            state.items2 = items;
+        },
+        SET_ITEMS3(state, items) {
+            state.items3 = items;
         }
     },
     getters: {

@@ -2,7 +2,7 @@
     <div>
         <v-layout row wrap>
             <v-flex sm2>
-                <v-select :items="currencies" item-value="text" label="Base Currency" single-line>
+                <v-select v-model="base" :items="currencies" item-value="text" label="Base Currency" single-line>
                     <template slot="item" scope="data">
                         <img :src="data.item.icon" :width="data.item.width" style="margin: 0 5px"/>
                         {{data.item.text}}
@@ -14,7 +14,7 @@
                 </v-select>
             </v-flex>
         </v-layout>
-        <v-layout row style="margin-top: 5px">
+        <v-layout row wrap>
             <v-flex sm12>
                 <v-data-table v-bind:headers="headers" v-bind:items="items" :rows-per-page-items="[20]"
                               v-bind:pagination.sync="pagination" hide-actions class="elevation-2">
@@ -52,7 +52,8 @@
             return {
                 pagination: {
                     sortBy: 'volume',
-                    descending: true
+                    descending: true,
+                    page: 1
                 },
                 headers: [
                     {text: 'MARKET', align: 'left', value: 'market'},
@@ -69,7 +70,8 @@
                     {text: 'BTC', icon: 'static/images/btc.svg', width: 20},
                     {text: 'ETH', icon: 'static/images/eth.svg', width: 20},
                     {text: 'USDT', icon: 'static/images/tether.svg', width: 20}
-                ]
+                ],
+                base: {text: 'BTC', icon: 'static/images/btc.svg', width: 20}
             }
         },
         computed: {
@@ -80,7 +82,14 @@
                 return this.$store.state.items;
             }
         },
+        watch: {
+            base(val) {
+                this.pagination.page = 1;
+                ipcRenderer.send('market:base', val);
+            }
+        },
         mounted() {
+            ipcRenderer.send('market:base', 'BTC');
             ipcRenderer.on('market:summaries', (e, items) => this.$store.commit('SET_ITEMS', items))
         },
         methods: {

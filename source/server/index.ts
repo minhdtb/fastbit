@@ -3,6 +3,7 @@ import {resolve} from 'path'
 import * as bittrex from 'node.bittrex.api'
 import * as _ from 'lodash'
 import * as moment from 'moment'
+import * as fs from 'fs'
 
 const isDev = require('electron-is-dev');
 const {autoUpdater} = require("electron-updater");
@@ -15,6 +16,10 @@ const WINDOW_WIDTH = 1000;
 const WINDOW_HEIGHT = 725;
 
 let mainWindow;
+
+let base = 'BTC';
+let currency = 'ETH';
+let market = 'BTC-ETH';
 
 (process as NodeJS.EventEmitter).on('uncaughtException', error => {
     log.error(error)
@@ -32,7 +37,7 @@ const isSecondInstance = app.makeSingleInstance(() => {
     }
 });
 
-const updateTable = () => {
+const getMarketSumaries = () => {
     Promise.all([
         new Promise((resolve, reject) => {
             bittrex.getmarkets(markets => {
@@ -73,7 +78,7 @@ const updateTable = () => {
 
             return summary;
         }), sum => {
-            return sum.MarketName.indexOf('BTC-') !== -1;
+            return sum.MarketName.indexOf(base + '-') !== -1;
         });
 
         let items = [];
@@ -93,16 +98,73 @@ const updateTable = () => {
         });
 
         mainWindow.webContents.send('market:summaries', items);
-    }).catch();
+    }).catch(e => console.log(e));
 
     setTimeout(function () {
-        updateTable();
+        getMarketSumaries();
     }, 1000);
+};
+
+const getBalance = () => {
+    bittrex.getbalance({currency: market.split('-')[1]}, (res) => {
+        if (res) {
+            mainWindow.webContents.send('market:balance', res.result);
+        }
+
+        setTimeout(function () {
+            getBalance();
+        }, 1000);
+    })
+};
+
+const getBuyOrders = () => {
+    bittrex.getorderbook({market: market, type: 'buy'}, res => {
+        if (res) {
+            mainWindow.webContents.send('market:buy:orders', _.take(res.result, 5));
+        }
+
+        setTimeout(function () {
+            getBuyOrders();
+        }, 3000);
+    })
+};
+
+const getSellOrders = () => {
+    bittrex.getorderbook({market: market, type: 'sell'}, res => {
+        if (res) {
+            mainWindow.webContents.send('market:sell:orders', _.take(res.result, 5));
+        }
+
+        setTimeout(function () {
+            getSellOrders();
+        }, 3000);
+    })
+};
+
+const getMarketHistory = () => {
+    bittrex.getmarkethistory({market: market}, res => {
+        if (res) {
+            mainWindow.webContents.send('market:histories', _.take(res.result, 5));
+        }
+
+        setTimeout(function () {
+            getMarketHistory();
+        }, 3000);
+    })
 };
 
 if (isSecondInstance) {
     app.quit()
 }
+
+const MAIN_CONFIG = app.getPath('userData') + '/config_main.json';
+
+const getSettings = () => {
+    if (fs.existsSync(MAIN_CONFIG)) {
+        return JSON.parse(fs.readFileSync(MAIN_CONFIG, 'utf8').toString());
+    } else
+        return {};
+};
 
 app.on('ready', () => {
     if (!isDev) {
@@ -138,7 +200,28 @@ app.on('ready', () => {
 
     });
 
-    updateTable();
+    ipcMain.on('market:base', (e, data) => base = data);
+    ipcMain.on('market:market', (e, data) => {
+        console.log(data);
+        market = data
+    });
+
+    const APIKEY = (getSettings() as any).apiKey;
+    const APISECRET = (getSettings() as any).apiSecret;
+
+    bittrex.options({
+        'apikey': APIKEY,
+        'apisecret': APISECRET,
+        'stream': false,
+        'verbose': false,
+        'cleartext': false
+    });
+
+    getMarketSumaries();
+    getBalance();
+    getBuyOrders();
+    getSellOrders();
+    getMarketHistory();
 
     mainWindow.loadURL(mainURL);
 });
