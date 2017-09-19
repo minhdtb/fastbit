@@ -1,29 +1,45 @@
 <template>
-    <v-layout row style="margin-top: 5px">
-        <v-flex sm12>
-            <v-data-table v-bind:headers="headers" v-bind:items="items" v-bind:search="search"
-                          :rows-per-page-items="[20]"
-                          v-bind:pagination.sync="pagination" hide-actions class="elevation-2">
-                <template slot="items" scope="props">
-                    <td>
-                        <a href="#" @click.stop="click">{{ props.item.market }}</a>
-                    </td>
-                    <td class="">{{ props.item.currency }}</td>
-                    <td class="text-xs-right">{{ props.item.volume }}</td>
-                    <td v-if="props.item.change24 <= 0" class="text-xs-right error--text">{{ props.item.change24 }}<v-icon error>fa-arrow-down fa-1</v-icon></td>
-                    <td v-else="" class="text-xs-right green--text">{{ props.item.change24 }}<v-icon class="green--text">fa-arrow-up fa-1</v-icon></td>
-                    <td class="text-xs-right">{{ props.item.change }}</td>
-                    <td class="text-xs-right">{{ props.item.lastPrice }}</td>
-                    <td class="text-xs-right">{{ props.item.high }}</td>
-                    <td class="text-xs-right">{{ props.item.low }}</td>
-                    <td class="">{{ props.item.added }}</td>
-                </template>
-            </v-data-table>
-            <div class="text-xs-center pt-2">
-                <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
-            </div>
-        </v-flex>
-    </v-layout>
+    <div>
+        <v-layout row wrap>
+            <v-flex sm2>
+                <v-select :items="currencies" item-value="text" label="Base Currency" single-line>
+                    <template slot="item" scope="data">
+                        <img :src="data.item.icon" height="20" width="20" style="margin: 0 5px"/>
+                        {{data.item.text}}
+                    </template>
+                </v-select>
+            </v-flex>
+        </v-layout>
+        <v-layout row style="margin-top: 5px">
+            <v-flex sm12>
+                <v-data-table v-bind:headers="headers" v-bind:items="items" v-bind:search="search"
+                              :rows-per-page-items="[20]"
+                              v-bind:pagination.sync="pagination" hide-actions class="elevation-2">
+                    <template slot="items" scope="props">
+                        <td>
+                            <a href="#" @click.stop="click">{{ props.item.market }}</a>
+                        </td>
+                        <td class="">{{ props.item.currency }}</td>
+                        <td class="text-xs-right">{{ props.item.volume }}</td>
+                        <td v-if="props.item.change24 <= 0" class="text-xs-right error--text">{{ props.item.change24 }}
+                            <v-icon error>fa-arrow-down fa-1</v-icon>
+                        </td>
+                        <td v-else="" class="text-xs-right green--text">{{ props.item.change24 }}
+                            <v-icon class="green--text">fa-arrow-up fa-1</v-icon>
+                        </td>
+                        <td class="text-xs-right">{{ props.item.change }}</td>
+                        <td class="text-xs-right">{{ props.item.lastPrice }}</td>
+                        <td class="text-xs-right">{{ props.item.high }}</td>
+                        <td class="text-xs-right">{{ props.item.low }}</td>
+                        <td class="">{{ props.item.added }}</td>
+                    </template>
+                </v-data-table>
+                <div class="text-xs-center pt-2">
+                    <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
+                </div>
+            </v-flex>
+        </v-layout>
+    </div>
 </template>
 <script>
     import {ipcRenderer, remote} from 'electron'
@@ -31,13 +47,10 @@
     export default {
         data() {
             return {
-                search: '',
                 pagination: {
                     sortBy: 'volume',
                     descending: true
                 },
-                selected: [],
-                rowsPerPage: [5, 15, 25, {text: "All", value: -1}],
                 headers: [
                     {text: 'MARKET', align: 'left', value: 'market'},
                     {text: 'CURRENCY ', align: 'center', value: 'currency'},
@@ -48,6 +61,11 @@
                     {text: 'HIGH', align: 'center', value: 'high'},
                     {text: 'LOW', align: 'center', value: 'low'},
                     {text: 'ADDED', align: 'center', value: 'added'}
+                ],
+                currencies: [
+                    {text: 'BTC', icon: 'static/images/btc.svg'},
+                    {text: 'ETH', icon: 'static/images/eth.svg'},
+                    {text: 'USDT', icon: 'static/images/tether.svg'}
                 ]
             }
         },
