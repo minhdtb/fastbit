@@ -4,7 +4,11 @@
             <v-flex sm2>
                 <v-select :items="currencies" item-value="text" label="Base Currency" single-line>
                     <template slot="item" scope="data">
-                        <img :src="data.item.icon" height="20" width="20" style="margin: 0 5px"/>
+                        <img :src="data.item.icon" :width="data.item.width" style="margin: 0 5px"/>
+                        {{data.item.text}}
+                    </template>
+                    <template slot="selection" scope="data">
+                        <img :src="data.item.icon" :width="data.item.width" style="margin: 0 5px"/>
                         {{data.item.text}}
                     </template>
                 </v-select>
@@ -12,8 +16,7 @@
         </v-layout>
         <v-layout row style="margin-top: 5px">
             <v-flex sm12>
-                <v-data-table v-bind:headers="headers" v-bind:items="items" v-bind:search="search"
-                              :rows-per-page-items="[20]"
+                <v-data-table v-bind:headers="headers" v-bind:items="items" :rows-per-page-items="[20]"
                               v-bind:pagination.sync="pagination" hide-actions class="elevation-2">
                     <template slot="items" scope="props">
                         <td>
@@ -63,9 +66,9 @@
                     {text: 'ADDED', align: 'center', value: 'added'}
                 ],
                 currencies: [
-                    {text: 'BTC', icon: 'static/images/btc.svg'},
-                    {text: 'ETH', icon: 'static/images/eth.svg'},
-                    {text: 'USDT', icon: 'static/images/tether.svg'}
+                    {text: 'BTC', icon: 'static/images/btc.svg', width: 20},
+                    {text: 'ETH', icon: 'static/images/eth.svg', width: 20},
+                    {text: 'USDT', icon: 'static/images/tether.svg', width: 20}
                 ]
             }
         },
