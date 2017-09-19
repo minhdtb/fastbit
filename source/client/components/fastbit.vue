@@ -55,8 +55,8 @@
                 </v-layout>
                 <v-layout row wrap>
                     <v-flex sm12 style="padding: 0 3px">
-                        <v-data-table v-bind:headers="table3.headers" v-bind:items="items3" hide-actions
-                                      class="elevation-2">
+                        <v-data-table v-bind:headers="table3.headers" v-bind:items="items3"
+                                      v-bind:pagination.sync="table3.pagination" hide-actions class="elevation-2">
                             <template slot="items" scope="props">
                                 <td v-if="props.item.OrderType === 'BUY'" class="text-xs-center green--text">{{ props.item.OrderType }}</td>
                                 <td v-else="" class="text-xs-center red--text">{{ props.item.OrderType }}</td>
@@ -90,11 +90,14 @@
                     ]
                 },
                 table3: {
+                    pagination: {
+                        sortBy: 'Price'
+                    },
                     headers: [
-                        {text: 'SELL/BUY', align: 'center', value: 'amount'},
-                        {text: 'PRICE ', align: 'center', value: 'amount'},
-                        {text: 'AMOUNT ', align: 'center', value: 'amount'},
-                        {text: 'TOTAL ', align: 'center', value: 'amount'},
+                        {text: 'SELL/BUY', align: 'center', value: 'OrderType'},
+                        {text: 'PRICE ', align: 'center', value: 'Price'},
+                        {text: 'AMOUNT ', align: 'center', value: 'Quantity'},
+                        {text: 'TOTAL ', align: 'center', value: 'Total'},
                     ]
                 }
             }

@@ -18,7 +18,6 @@ const WINDOW_HEIGHT = 725;
 let mainWindow;
 
 let base = 'BTC';
-let currency = 'ETH';
 let market = 'BTC-ETH';
 
 (process as NodeJS.EventEmitter).on('uncaughtException', error => {
@@ -201,10 +200,7 @@ app.on('ready', () => {
     });
 
     ipcMain.on('market:base', (e, data) => base = data);
-    ipcMain.on('market:market', (e, data) => {
-        console.log(data);
-        market = data
-    });
+    ipcMain.on('market:market', (e, data) => market = data);
 
     const APIKEY = (getSettings() as any).apiKey;
     const APISECRET = (getSettings() as any).apiSecret;
