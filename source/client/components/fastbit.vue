@@ -83,6 +83,9 @@
                                 <td v-else="" class="text-xs-center red--text">{{ props.item.OrderType }}</td>
                                 <td class="text-xs-right">{{ props.item.Price.toFixed(8) }}</td>
                                 <td class="text-xs-right">{{ props.item.Quantity.toFixed(8) }}</td>
+                                <td class="text-xs-center">
+                                    <v-btn></v-btn>
+                                </td>
                             </template>
                         </v-data-table>
                     </v-flex>
@@ -186,7 +189,7 @@
                                 <v-btn :disabled="action" primary @click.stop="buyRateNow">BUY</v-btn>
                             </v-flex>
                             <v-flex sm4 class="text-sm-center">
-                                <v-btn warning>CANCEL</v-btn>
+                                <v-btn @click.stop="cancelLastBuy" warning>CANCEL</v-btn>
                             </v-flex>
                         </v-layout>
                         <v-layout>
@@ -216,7 +219,7 @@
                             <v-flex sm3>
                                 <v-radio-group v-model="radioSell" :mandatory="false">
                                     <v-radio label="All (100%)" value="radio-sell-all"></v-radio>
-                                    <v-radio label="Amount" value="radio-sell-amount"></v-radio>
+                                    <v-radio label="Partly" value="radio-sell-amount"></v-radio>
                                 </v-radio-group>
                             </v-flex>
                             <v-flex sm2 class="pr-2">
@@ -224,7 +227,7 @@
                                               :disabled="radioSell === 'radio-sell-all'" class="mr-1"
                                               style="width: 70px; margin-top: 30px"></v-text-field>
                             </v-flex>
-                            <v-flex sm1 style="margin-top: 53px"><span>{{dstCurrency}}</span></v-flex>
+                            <v-flex sm1 style="margin-top: 53px"><span>%</span></v-flex>
                             <v-flex sm6 class="text-sm-center">
                                 <v-btn :disabled="action" @click.stop="sellNow" error
                                        style="width: 180px; height: 50px;margin-top: 17px">
@@ -243,7 +246,7 @@
                                 <v-btn :disabled="action" error @click.stop="sellRateNow">SELL</v-btn>
                             </v-flex>
                             <v-flex sm4 class="text-sm-center">
-                                <v-btn warning>CANCEL</v-btn>
+                                <v-btn @click.stop="cancelLastSell" warning>CANCEL</v-btn>
                             </v-flex>
                         </v-layout>
                         <v-layout>
@@ -285,6 +288,8 @@
                 sellRate: 0,
                 sellRatePercent: 0,
                 sellNowAmount: 0,
+                lastBuyId: null,
+                lastSellId: null,
                 table1: {
                     pagination: {
                         sortBy: 'Price'
@@ -416,6 +421,8 @@
                         }, (error, data) => {
                             if (data && !data.success)
                                 alert(data.message);
+                            else
+                                this.lastBuyId = data.result.uuid;
 
                             this.action = false;
                         })
@@ -423,7 +430,8 @@
                 })
             },
             sellNow() {
-                let amount = this.radioSell === 'radio-sell-amount' ? this.sellNowAmount : this.dstAvailable;
+                let amount = this.radioSell === 'radio-sell-amount' ?
+                    this.sellNowAmount / 100 * this.dstAvailable : this.dstAvailable;
 
                 if (amount > this.dstAvailable || amount <= 0)
                     return alert('Invalid sell amount.');
@@ -450,6 +458,8 @@
                     }, (error, data) => {
                         if (data && !data.success)
                             alert(data.message);
+                        else
+                            this.lastSellId = data.result.uuid;
 
                         this.action = false;
                     })
@@ -476,12 +486,15 @@
                 }, (error, data) => {
                     if (data && !data.success)
                         alert(data.message);
+                    else
+                        this.lastBuyId = data.result.uuid;
 
                     this.action = false;
                 })
             },
             sellRateNow() {
-                let amount = this.radioSell === 'radio-sell-amount' ? this.sellNowAmount : this.dstAvailable;
+                let amount = this.radioSell === 'radio-sell-amount' ?
+                    this.sellNowAmount / 100 * this.dstAvailable : this.dstAvailable;
 
                 if (amount > this.dstAvailable || amount <= 0)
                     return alert('Invalid sell amount.');
@@ -500,15 +513,89 @@
                 }, (error, data) => {
                     if (data && !data.success)
                         alert(data.message);
+                    else
+                        this.lastSellId = data.result.uuid;
 
                     this.action = false;
                 })
             },
             buyRatePercentNow() {
-                alert('buyRatePercentNow')
+                let amount = this.radioBuy === 'radio-buy-amount' ? this.buyNowAmount : this.srcAvailable;
+
+                if (amount > this.srcAvailable || amount <= 0)
+                    return alert('Invalid buy amount.');
+
+                this.action = true;
+                bittrex.getticker({market: this.market}, res => {
+                    if (res && res.success) {
+                        let last = res.result.Last;
+                        let rate = last - (last * this.buyRatePercent / 100);
+                        let quantity = amount / rate;
+
+                        bittrex.buylimit({
+                            market: this.market,
+                            quantity: quantity,
+                            rate: rate
+                        }, (error, data) => {
+                            if (data && !data.success)
+                                alert(data.message);
+                            else
+                                this.lastBuyId = data.result.uuid;
+
+                            this.action = false;
+                        })
+                    }
+                });
             },
             sellRatePercentNow() {
-                alert('sellRatePercentNow')
+                let amount = this.radioSell === 'radio-sell-amount' ?
+                    this.sellNowAmount / 100 * this.dstAvailable : this.dstAvailable;
+
+                if (amount > this.dstAvailable || amount <= 0)
+                    return alert('Invalid sell amount.');
+
+                this.action = true;
+                bittrex.getorderhistory({market: market}, res => {
+                    if (res && res.success) {
+                        let buyList = _.filter(res.result, item => {
+                            return item.OrderType === 'LIMIT_BUY'
+                        });
+
+                        let rate = buyList[0].Price + buyList[0].Price * this.sellRatePercent / 100;
+                        let quantity = amount / rate;
+
+                        bittrex.selllimit({
+                            market: this.market,
+                            quantity: quantity,
+                            rate: rate
+                        }, (error, data) => {
+                            if (data && !data.success)
+                                alert(data.message);
+                            else
+                                this.lastSellId = data.result.uuid;
+
+                            this.action = false;
+                        })
+                    }
+                });
+            },
+            cancelLastBuy() {
+                if (this.lastBuyId) {
+                    bittrex.cancel({
+                        uuid: this.lastBuyId
+                    }, () => {
+                        alert('Cancel Buy OK');
+                    })
+                }
+            },
+            cancelLastSell() {
+                if (this.lastSellId) {
+                    bittrex.cancel({
+                        uuid: this.lastSellId
+                    }, () => {
+                        alert('Cancel Sell OK');
+                    })
+                }
             }
         }
     }
