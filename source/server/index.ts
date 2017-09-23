@@ -13,7 +13,7 @@ autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 
 const WINDOW_WIDTH = 1000;
-const WINDOW_HEIGHT = 725;
+const WINDOW_HEIGHT = 780;
 
 let mainWindow;
 
@@ -105,9 +105,16 @@ const getMarketSumaries = () => {
 };
 
 const getBalance = () => {
-    bittrex.getbalance({currency: market.split('-')[1]}, (res) => {
+    bittrex.getbalances(res => {
         if (res) {
-            mainWindow.webContents.send('market:balance', res.result);
+            mainWindow.webContents.send('market:balance', [
+                _.find(res.result, item => {
+                    return item.Currency === market.split('-')[0]
+                }),
+                _.find(res.result, item => {
+                    return item.Currency === market.split('-')[1]
+                })
+            ]);
         }
 
         setTimeout(function () {
@@ -124,7 +131,7 @@ const getBuyOrders = () => {
 
         setTimeout(function () {
             getBuyOrders();
-        }, 3000);
+        }, 10000);
     })
 };
 
@@ -148,6 +155,30 @@ const getMarketHistory = () => {
 
         setTimeout(function () {
             getMarketHistory();
+        }, 3000);
+    })
+};
+
+const getOpenOrders = () => {
+    bittrex.getopenorders({market: market}, res => {
+        if (res) {
+            mainWindow.webContents.send('market:open:orders', _.take(res.result, 5));
+        }
+
+        setTimeout(function () {
+            getOpenOrders();
+        }, 3000);
+    })
+};
+
+const getCompletedOrders = () => {
+    bittrex.getorderhistory({market: market}, res => {
+        if (res) {
+            mainWindow.webContents.send('market:completed:orders', _.take(res.result, 5));
+        }
+
+        setTimeout(function () {
+            getCompletedOrders();
         }, 3000);
     })
 };
@@ -218,6 +249,8 @@ app.on('ready', () => {
     getBuyOrders();
     getSellOrders();
     getMarketHistory();
+    getOpenOrders();
+    getCompletedOrders();
 
     mainWindow.loadURL(mainURL);
 });
