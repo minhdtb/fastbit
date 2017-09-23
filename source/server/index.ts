@@ -232,27 +232,34 @@ app.on('ready', () => {
 
     ipcMain.on('market:base', (e, data) => base = data);
     ipcMain.on('market:market', (e, data) => market = data);
+    ipcMain.on('market:config', (e, data) => {
+        const APIKEY = data.apiKey;
+        const APISECRET = data.apiSecret;
 
-    const APIKEY = (getSettings() as any).apiKey;
-    const APISECRET = (getSettings() as any).apiSecret;
+        if (APIKEY && APISECRET) {
+            bittrex.options({
+                'apikey': APIKEY,
+                'apisecret': APISECRET,
+                'stream': false,
+                'verbose': false,
+                'cleartext': false
+            });
 
-    bittrex.options({
-        'apikey': APIKEY,
-        'apisecret': APISECRET,
-        'stream': false,
-        'verbose': false,
-        'cleartext': false
+            getMarketSumaries();
+            getBalance();
+            getBuyOrders();
+            getSellOrders();
+            getMarketHistory();
+            getOpenOrders();
+            getCompletedOrders();
+        }
     });
 
-    getMarketSumaries();
-    getBalance();
-    getBuyOrders();
-    getSellOrders();
-    getMarketHistory();
-    getOpenOrders();
-    getCompletedOrders();
-
     mainWindow.loadURL(mainURL);
+});
+
+app.on('window-all-closed', () => {
+    app.quit()
 });
 
 autoUpdater.on('update-downloaded', () => {

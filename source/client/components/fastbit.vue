@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <v-layout row wrap style="margin-top: 5px">
             <v-flex sm2 offset-sm5>
                 <h5 class="volume orange--text">{{market}}</h5>
@@ -28,8 +27,8 @@
                                 </tr>
                             </template>
                             <template slot="items" scope="props">
-                                <td class="text-xs-center">{{ props.item.Rate }}</td>
-                                <td class="text-xs-center">{{ props.item.Quantity }}</td>
+                                <td class="text-xs-right">{{ props.item.Rate.toFixed(8) }}</td>
+                                <td class="text-xs-right">{{ props.item.Quantity.toFixed(8) }}</td>
                             </template>
                         </v-data-table>
                     </v-flex>
@@ -53,8 +52,8 @@
                                 </tr>
                             </template>
                             <template slot="items" scope="props">
-                                <td class="text-xs-center">{{ props.item.Rate }}</td>
-                                <td class="text-xs-center">{{ props.item.Quantity }}</td>
+                                <td class="text-xs-right">{{ props.item.Rate.toFixed(8) }}</td>
+                                <td class="text-xs-right">{{ props.item.Quantity.toFixed(8) }}</td>
                             </template>
                         </v-data-table>
                     </v-flex>
@@ -82,8 +81,8 @@
                                     {{ props.item.OrderType }}
                                 </td>
                                 <td v-else="" class="text-xs-center red--text">{{ props.item.OrderType }}</td>
-                                <td class="text-xs-center">{{ props.item.Price }}</td>
-                                <td class="text-xs-center">{{ props.item.Quantity }}</td>
+                                <td class="text-xs-right">{{ props.item.Price.toFixed(8) }}</td>
+                                <td class="text-xs-right">{{ props.item.Quantity.toFixed(8) }}</td>
                             </template>
                         </v-data-table>
                     </v-flex>
@@ -113,9 +112,9 @@
                                     {{ props.item.OrderType }}
                                 </td>
                                 <td v-else="" class="text-xs-center red--text">{{ props.item.OrderType }}</td>
-                                <td class="text-xs-center">{{ props.item.Price }}</td>
-                                <td class="text-xs-center">{{ props.item.Quantity }}</td>
-                                <td class="text-xs-center">{{ props.item.Total }}</td>
+                                <td class="text-xs-right">{{ props.item.Price.toFixed(8) }}</td>
+                                <td class="text-xs-right">{{ props.item.Quantity.toFixed(8) }}</td>
+                                <td class="text-xs-right">{{ props.item.Total.toFixed(8) }}</td>
                             </template>
                         </v-data-table>
                     </v-flex>
@@ -143,8 +142,8 @@
                                     {{ props.item.OrderType }}
                                 </td>
                                 <td v-else="" class="text-xs-center red--text">{{ props.item.OrderType }}</td>
-                                <td class="text-xs-center">{{ props.item.Price }}</td>
-                                <td class="text-xs-center">{{ props.item.Quantity }}</td>
+                                <td class="text-xs-right">{{ props.item.Price.toFixed(8) }}</td>
+                                <td class="text-xs-right">{{ props.item.Quantity.toFixed(8) }}</td>
                             </template>
                         </v-data-table>
                     </v-flex>
@@ -155,7 +154,7 @@
             <v-flex sm6 class="pa-1 mt-1">
                 <v-card class=" elevation-3">
                     <v-card-media class="pa-1 pl-3">
-                        <h5 class="lb">Available: {{srcAvailable}} {{srcCurrency}}</h5>
+                        <h5 class="lb">Available: {{srcAvailable}} ({{srcCurrency}})</h5>
                         <v-layout>
                             <v-flex sm3>
                                 <v-radio-group v-model="radioBuy" :mandatory="false">
@@ -177,12 +176,40 @@
                             </v-flex>
                         </v-layout>
                     </v-card-media>
+                    <v-card-media class="pa-1 pl-3">
+                        <v-layout>
+                            <v-flex sm4 class="text-sm-center">
+                                <v-text-field type="number" v-model="buyRate"
+                                              style="width: 120px; margin-bottom: -20px; margin-top: -15px"></v-text-field>
+                            </v-flex>
+                            <v-flex sm4 class="text-sm-center">
+                                <v-btn primary @click.stop="buyRateNow">BUY</v-btn>
+                            </v-flex>
+                            <v-flex sm4 class="text-sm-center">
+                                <v-btn warning>CANCEL</v-btn>
+                            </v-flex>
+                        </v-layout>
+                        <v-layout>
+                            <v-flex sm4 class="text-sm-center">
+                                <v-layout row>
+                                    <v-flex>
+                                        <v-text-field type="number" v-model="buyRatePercent"
+                                                      style="width: 120px"></v-text-field>
+                                    </v-flex>
+                                    <v-flex style="margin-top: 37px"><span>(%)</span></v-flex>
+                                </v-layout>
+                            </v-flex>
+                            <v-flex sm4 class="text-sm-center">
+                                <v-btn primary @click.stop="buyRatePercentNow" style="margin-top: 20px">BUY</v-btn>
+                            </v-flex>
+                        </v-layout>
+                    </v-card-media>
                 </v-card>
             </v-flex>
             <v-flex sm6 class="pa-1 mt-1">
                 <v-card class=" elevation-3">
                     <v-card-media class="pa-1 pl-3">
-                        <h5 class="lb">Available: {{dstAvailable}} {{dstCurrency}}</h5>
+                        <h5 class="lb">Available: {{dstAvailable}} ({{dstCurrency}})</h5>
                         <v-layout>
                             <v-flex sm3>
                                 <v-radio-group v-model="radioSell" :mandatory="false">
@@ -204,6 +231,34 @@
                             </v-flex>
                         </v-layout>
                     </v-card-media>
+                    <v-card-media class="pa-1 pl-3">
+                        <v-layout>
+                            <v-flex sm4 class="text-sm-center">
+                                <v-text-field type="number" v-model="sellRate"
+                                              style="width: 120px; margin-bottom: -20px; margin-top: -15px"></v-text-field>
+                            </v-flex>
+                            <v-flex sm4 class="text-sm-center">
+                                <v-btn error @click.stop="sellRateNow">SELL</v-btn>
+                            </v-flex>
+                            <v-flex sm4 class="text-sm-center">
+                                <v-btn warning>CANCEL</v-btn>
+                            </v-flex>
+                        </v-layout>
+                        <v-layout>
+                            <v-flex sm4 class="text-sm-center">
+                                <v-layout row>
+                                    <v-flex>
+                                        <v-text-field type="number" v-model="sellRatePercent"
+                                                      style="width: 120px"></v-text-field>
+                                    </v-flex>
+                                    <v-flex style="margin-top: 37px"><span>(%)</span></v-flex>
+                                </v-layout>
+                            </v-flex>
+                            <v-flex sm4 class="text-sm-center">
+                                <v-btn error @click.stop="sellRatePercentNow" style="margin-top: 20px">SELL</v-btn>
+                            </v-flex>
+                        </v-layout>
+                    </v-card-media>
                 </v-card>
             </v-flex>
         </v-layout>
@@ -221,6 +276,10 @@
                 radioBuy: 'radio-buy-amount',
                 radioSell: 'radio-sell-amount',
                 buyNowAmount: 0,
+                buyRate: 0,
+                buyRatePercent: 0,
+                sellRate: 0,
+                sellRatePercent: 0,
                 sellNowAmount: 0,
                 table1: {
                     pagination: {
@@ -308,6 +367,15 @@
         },
         mounted() {
             ipcRenderer.send('market:market', this.market);
+            ipcRenderer.send('market:config', this.$store.state.config);
+
+            bittrex.options({
+                'apikey': this.$store.state.config.apiKey,
+                'apisecret': this.$store.state.apiSecret,
+                'stream': false,
+                'verbose': false,
+                'cleartext': false
+            });
 
             ipcRenderer.on('market:balance', (e, info) => this.$store.commit('SET_BALANCE', info));
             ipcRenderer.on('market:buy:orders', (e, items) => this.$store.commit('SET_ITEMS1', items));
@@ -376,6 +444,55 @@
                         this.action = false;
                     })
                 })
+            },
+            buyRateNow() {
+                let amount = this.radioBuy === 'radio-buy-amount' ? this.buyNowAmount : this.srcAvailable;
+
+                if (amount > this.srcAvailable || amount <= 0)
+                    return alert('Invalid buy amount.');
+
+                let rate = this.buyRate;
+
+                if (rate < 0)
+                    return alert('Invalid buy rate.');
+
+                let quantity = amount / rate;
+
+                this.action = true;
+                bittrex.buylimit({
+                    market: this.market,
+                    quantity: quantity,
+                    rate: rate
+                }, () => {
+                    this.action = false;
+                })
+            },
+            sellRateNow() {
+                let amount = this.radioSell === 'radio-sell-amount' ? this.sellNowAmount : this.dstAvailable;
+
+                if (amount > this.dstAvailable || amount <= 0)
+                    return alert('Invalid sell amount.');
+
+                let rate = this.sellRate;
+
+                if (rate < 0)
+                    return alert('Invalid sell rate.');
+
+                let quantity = amount / rate;
+
+                bittrex.selllimit({
+                    market: this.market,
+                    quantity: quantity,
+                    rate: rate
+                }, () => {
+                    this.action = false;
+                })
+            },
+            buyRatePercentNow() {
+                alert('buyRatePercentNow')
+            },
+            sellRatePercentNow() {
+                alert('sellRatePercentNow')
             }
         }
     }

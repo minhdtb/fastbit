@@ -26,7 +26,7 @@ const routes = [
 const router = new VueRouter({routes});
 
 const MAIN_CONFIG = remote.app.getPath('userData') + '/config_main.json';
-const API_URL = 'http://127.0.0.1:3000/api';
+const API_URL = 'http://auth2.esminer.com/api';
 
 export const getSettings = () => {
     if (fs.existsSync(MAIN_CONFIG)) {
