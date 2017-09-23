@@ -83,8 +83,11 @@
                                 <td v-else="" class="text-xs-center red--text">{{ props.item.OrderType }}</td>
                                 <td class="text-xs-right">{{ props.item.Price.toFixed(8) }}</td>
                                 <td class="text-xs-right">{{ props.item.Quantity.toFixed(8) }}</td>
-                                <td class="text-xs-center">
-                                    <v-btn></v-btn>
+                                <td class="text-xs-center pa-0">
+                                    <v-btn class="button" warning style="height: 20px; width: 50px"
+                                           @click.stop="cancelOrder( props.item.OrderUuid)">
+                                        <v-icon>fa-close</v-icon>
+                                    </v-btn>
                                 </td>
                             </template>
                         </v-data-table>
@@ -596,6 +599,13 @@
                         alert('Cancel Sell OK');
                     })
                 }
+            },
+            cancelOrder(uuid) {
+                bittrex.cancel({
+                    uuid: uuid
+                }, () => {
+                    alert('Cancel Order OK');
+                })
             }
         }
     }
