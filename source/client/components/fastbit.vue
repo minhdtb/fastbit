@@ -183,7 +183,7 @@
                                               style="width: 120px; margin-bottom: -20px; margin-top: -15px"></v-text-field>
                             </v-flex>
                             <v-flex sm4 class="text-sm-center">
-                                <v-btn primary @click.stop="buyRateNow">BUY</v-btn>
+                                <v-btn :disabled="action" primary @click.stop="buyRateNow">BUY</v-btn>
                             </v-flex>
                             <v-flex sm4 class="text-sm-center">
                                 <v-btn warning>CANCEL</v-btn>
@@ -200,7 +200,9 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex sm4 class="text-sm-center">
-                                <v-btn primary @click.stop="buyRatePercentNow" style="margin-top: 20px">BUY</v-btn>
+                                <v-btn :disabled="action" primary @click.stop="buyRatePercentNow"
+                                       style="margin-top: 20px">BUY
+                                </v-btn>
                             </v-flex>
                         </v-layout>
                     </v-card-media>
@@ -238,7 +240,7 @@
                                               style="width: 120px; margin-bottom: -20px; margin-top: -15px"></v-text-field>
                             </v-flex>
                             <v-flex sm4 class="text-sm-center">
-                                <v-btn error @click.stop="sellRateNow">SELL</v-btn>
+                                <v-btn :disabled="action" error @click.stop="sellRateNow">SELL</v-btn>
                             </v-flex>
                             <v-flex sm4 class="text-sm-center">
                                 <v-btn warning>CANCEL</v-btn>
@@ -255,7 +257,9 @@
                                 </v-layout>
                             </v-flex>
                             <v-flex sm4 class="text-sm-center">
-                                <v-btn error @click.stop="sellRatePercentNow" style="margin-top: 20px">SELL</v-btn>
+                                <v-btn :disabled="action" error @click.stop="sellRatePercentNow"
+                                       style="margin-top: 20px">SELL
+                                </v-btn>
                             </v-flex>
                         </v-layout>
                     </v-card-media>
@@ -371,7 +375,7 @@
 
             bittrex.options({
                 'apikey': this.$store.state.config.apiKey,
-                'apisecret': this.$store.state.apiSecret,
+                'apisecret': this.$store.state.config.apiSecret,
                 'stream': false,
                 'verbose': false,
                 'cleartext': false
@@ -409,7 +413,10 @@
                             market: this.market,
                             quantity: quantity,
                             rate: rate
-                        }, () => {
+                        }, (error, data) => {
+                            if (data && !data.success)
+                                alert(data.message);
+
                             this.action = false;
                         })
                     }
@@ -440,7 +447,10 @@
                         market: this.market,
                         quantity: quantity,
                         rate: rate
-                    }, () => {
+                    }, (error, data) => {
+                        if (data && !data.success)
+                            alert(data.message);
+
                         this.action = false;
                     })
                 })
@@ -463,7 +473,10 @@
                     market: this.market,
                     quantity: quantity,
                     rate: rate
-                }, () => {
+                }, (error, data) => {
+                    if (data && !data.success)
+                        alert(data.message);
+
                     this.action = false;
                 })
             },
@@ -484,7 +497,10 @@
                     market: this.market,
                     quantity: quantity,
                     rate: rate
-                }, () => {
+                }, (error, data) => {
+                    if (data && !data.success)
+                        alert(data.message);
+
                     this.action = false;
                 })
             },

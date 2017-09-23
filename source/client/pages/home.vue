@@ -43,7 +43,7 @@
                     text: 'dashboard',
                     id: 'dashboard'
                 }, {
-                    text: 'fast trade',
+                    text: 'trading',
                     id: 'fastbit'
                 }],
                 version: remote.app.getVersion(),
