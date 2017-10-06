@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-layout row wrap style="margin-top: 5px">
+        <v-layout row wrap style="margin-top: 3px">
             <v-flex sm2 offset-sm5>
                 <h5 class="volume orange--text">{{market}}</h5>
             </v-flex>
@@ -8,7 +8,7 @@
                 <h5 class="volume green--text">{{balance}}</h5>
             </v-flex>
         </v-layout>
-        <v-layout row wrap style="margin-top: 5px">
+        <v-layout row wrap style="margin-top: 3px">
             <v-flex sm3>
                 <v-layout row wrap>
                     <v-flex sm12 class="text-xs-center">
@@ -16,7 +16,7 @@
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap>
-                    <v-flex sm12 style="padding: 0 3px">
+                    <v-flex sm12 style="padding: 0 2px">
                         <v-data-table v-bind:headers="table1.headers" v-bind:items="items1" hide-actions
                                       class="elevation-2">
                             <template slot="headers" scope="props">
@@ -41,7 +41,7 @@
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap>
-                    <v-flex sm12 style="padding: 0 3px">
+                    <v-flex sm12 style="padding: 0 2px">
                         <v-data-table v-bind:headers="table2.headers" v-bind:items="items2" hide-actions
                                       class="elevation-2">
                             <template slot="headers" scope="props">
@@ -66,7 +66,7 @@
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap>
-                    <v-flex sm12 style="padding: 0 3px">
+                    <v-flex sm12 style="padding: 0 2px">
                         <v-data-table v-bind:headers="table4.headers" v-bind:items="items4" hide-actions
                                       class="elevation-2">
                             <template slot="headers" scope="props">
@@ -81,10 +81,10 @@
                                     {{ props.item.OrderType }}
                                 </td>
                                 <td v-else="" class="text-xs-center red--text">{{ props.item.OrderType }}</td>
-                                <td class="text-xs-right">{{ props.item.Price.toFixed(8) }}</td>
+                                <td class="text-xs-right">{{ props.item.Limit.toFixed(8) }}</td>
                                 <td class="text-xs-right">{{ props.item.Quantity.toFixed(8) }}</td>
                                 <td class="text-xs-center pa-0">
-                                    <v-btn class="button" warning style="height: 20px; width: 50px"
+                                    <v-btn class="button" warning style="height: 15px; width: 50px"
                                            @click.stop="cancelOrder( props.item.OrderUuid)">
                                         <v-icon>fa-close</v-icon>
                                     </v-btn>
@@ -99,11 +99,11 @@
             <v-flex sm6>
                 <v-layout row wrap>
                     <v-flex sm12 class="text-xs-center">
-                        <h5 class="title">TRADES</h5>
+                        <h5 class="title">COMPLETED ORDERS</h5>
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap>
-                    <v-flex sm12 style="padding: 0 3px">
+                    <v-flex sm12 style="padding: 0 2px">
                         <v-data-table v-bind:headers="table3.headers" v-bind:items="items3"
                                       v-bind:pagination.sync="table3.pagination" hide-actions class="elevation-2">
                             <template slot="headers" scope="props">
@@ -133,7 +133,7 @@
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap>
-                    <v-flex sm12 style="padding: 0 3px">
+                    <v-flex sm12 style="padding: 0 2px">
                         <v-data-table v-bind:headers="table5.headers" v-bind:items="items5" hide-actions
                                       class="elevation-2">
                             <template slot="headers" scope="props">
@@ -148,8 +148,9 @@
                                     {{ props.item.OrderType }}
                                 </td>
                                 <td v-else="" class="text-xs-center red--text">{{ props.item.OrderType }}</td>
-                                <td class="text-xs-right">{{ props.item.Price.toFixed(8) }}</td>
+                                <td class="text-xs-right">{{ props.item.PricePerUnit.toFixed(8) }}</td>
                                 <td class="text-xs-right">{{ props.item.Quantity.toFixed(8) }}</td>
+                                <td class="text-xs-right">{{ props.item.Price.toFixed(8) }}</td>
                             </template>
                         </v-data-table>
                     </v-flex>
@@ -186,7 +187,7 @@
                         <v-layout>
                             <v-flex sm4 class="text-sm-center">
                                 <v-text-field type="number" v-model="buyRate"
-                                              style="width: 120px; margin-bottom: -20px; margin-top: -15px"></v-text-field>
+                                              style="width: 120px; margin-bottom: -30px; margin-top: -17px"></v-text-field>
                             </v-flex>
                             <v-flex sm4 class="text-sm-center">
                                 <v-btn :disabled="action" primary @click.stop="buyRateNow">BUY</v-btn>
@@ -202,12 +203,12 @@
                                         <v-text-field type="number" v-model="buyRatePercent"
                                                       style="width: 120px"></v-text-field>
                                     </v-flex>
-                                    <v-flex style="margin-top: 37px"><span>(%)</span></v-flex>
+                                    <v-flex style="margin-top: 30px"><span>(L-%)</span></v-flex>
                                 </v-layout>
                             </v-flex>
                             <v-flex sm4 class="text-sm-center">
                                 <v-btn :disabled="action" primary @click.stop="buyRatePercentNow"
-                                       style="margin-top: 20px">BUY
+                                       style="margin-top: 15px">BUY
                                 </v-btn>
                             </v-flex>
                         </v-layout>
@@ -243,7 +244,7 @@
                         <v-layout>
                             <v-flex sm4 class="text-sm-center">
                                 <v-text-field type="number" v-model="sellRate"
-                                              style="width: 120px; margin-bottom: -20px; margin-top: -15px"></v-text-field>
+                                              style="width: 120px; margin-bottom: -45px; margin-top: -15px"></v-text-field>
                             </v-flex>
                             <v-flex sm4 class="text-sm-center">
                                 <v-btn :disabled="action" error @click.stop="sellRateNow">SELL</v-btn>
@@ -259,12 +260,12 @@
                                         <v-text-field type="number" v-model="sellRatePercent"
                                                       style="width: 120px"></v-text-field>
                                     </v-flex>
-                                    <v-flex style="margin-top: 37px"><span>(%)</span></v-flex>
+                                    <v-flex style="margin-top: 37px"><span> (L+%)</span></v-flex>
                                 </v-layout>
                             </v-flex>
                             <v-flex sm4 class="text-sm-center">
                                 <v-btn :disabled="action" error @click.stop="sellRatePercentNow"
-                                       style="margin-top: 20px">SELL
+                                       style="margin-top: 15px">SELL
                                 </v-btn>
                             </v-flex>
                         </v-layout>
@@ -293,7 +294,7 @@
                 sellNowAmount: 0,
                 lastBuyId: null,
                 lastSellId: null,
-                table1: {
+                table1: { // Buy Orders
                     pagination: {
                         sortBy: 'Price'
                     },
@@ -302,7 +303,7 @@
                         {text: 'QUANTITY ', align: 'center', value: 'Quantity'},
                     ]
                 },
-                table2: {
+                table2: { // Sell Orders
                     pagination: {
                         sortBy: 'Price'
                     },
@@ -311,7 +312,7 @@
                         {text: 'QUANTITY ', align: 'center', value: 'Quantity'},
                     ]
                 },
-                table3: {
+                table3: { // Traded orders
                     headers: [
                         {text: 'TYPE', align: 'center', value: 'OrderType', width: '25%'},
                         {text: 'PRICE ', align: 'center', value: 'Price', width: '25%'},
@@ -319,15 +320,15 @@
                         {text: 'TOTAL ', align: 'center', value: 'Total'},
                     ]
                 },
-                table4: {
+                table4: { // My Open Orders
                     headers: [
                         {text: 'TYPE', align: 'center', value: 'OrderType', width: '25%'},
                         {text: 'PRICE ', align: 'center', value: 'Price', width: '25%'},
                         {text: 'QUANTITY ', align: 'center', value: 'Quantity', width: '25%'},
-                        {text: ' ', align: 'center', value: 'Total'},
+                        {text: 'CANCEL ', align: 'center', value: 'Total'},
                     ]
                 },
-                table5: {
+                table5: { // My Completed Orders
                     headers: [
                         {text: 'TYPE', align: 'center', value: 'OrderType', width: '25%'},
                         {text: 'PRICE ', align: 'center', value: 'Price', width: '25%'},
@@ -353,6 +354,7 @@
             items3() {
                 return this.$store.state.items3;
             },
+
             items4() {
                 return this.$store.state.items4;
             },
@@ -415,7 +417,7 @@
                             return tempAmount >= amount;
                         });
 
-                        let quantity = amount / rate;
+                        let quantity = 100 / 100.25 * amount / rate; //minus 0.25% transaction fee
 
                         bittrex.buylimit({
                             market: this.market,
@@ -452,11 +454,10 @@
                         });
                     }
 
-                    let quantity = amount / rate;
-
+                     // Quantity of destination coin Ex. BTC-ETC (destination)
                     bittrex.selllimit({
                         market: this.market,
-                        quantity: quantity,
+                        quantity: amount,
                         rate: rate
                     }, (error, data) => {
                         if (data && !data.success)
@@ -479,7 +480,7 @@
                 if (rate < 0)
                     return alert('Invalid buy rate.');
 
-                let quantity = amount / rate;
+                let quantity = 100 / 100.25 * amount / rate; // minus 0.25% transaction fee
 
                 this.action = true;
                 bittrex.buylimit({
@@ -507,11 +508,11 @@
                 if (rate < 0)
                     return alert('Invalid sell rate.');
 
-                let quantity = amount / rate;
 
+                 // Quantity of destination coin Ex. BTC-ETC (destination)
                 bittrex.selllimit({
                     market: this.market,
-                    quantity: quantity,
+                    quantity: amount,
                     rate: rate
                 }, (error, data) => {
                     if (data && !data.success)
@@ -533,7 +534,7 @@
                     if (res && res.success) {
                         let last = res.result.Last;
                         let rate = last - (last * this.buyRatePercent / 100);
-                        let quantity = amount / rate;
+                        let quantity = 100 / 100.25 * amount / rate; // minus 0.25% transaction fee
 
                         bittrex.buylimit({
                             market: this.market,
@@ -558,18 +559,17 @@
                     return alert('Invalid sell amount.');
 
                 this.action = true;
-                bittrex.getorderhistory({market: market}, res => {
+
+                bittrex.getticker({market: this.market}, res => {
                     if (res && res.success) {
-                        let buyList = _.filter(res.result, item => {
-                            return item.OrderType === 'LIMIT_BUY'
-                        });
+                        let last = res.result.Last;
+                        let rate = last + (last * this.sellRatePercent / 100);
 
-                        let rate = buyList[0].Price + buyList[0].Price * this.sellRatePercent / 100;
-                        let quantity = amount / rate;
 
+                         // Quantity of destination coin Ex. BTC-ETC (destination)
                         bittrex.selllimit({
                             market: this.market,
-                            quantity: quantity,
+                            quantity: amount,
                             rate: rate
                         }, (error, data) => {
                             if (data && !data.success)
@@ -613,7 +613,7 @@
 <style scoped="">
     .title {
         font-size: 14px !important;
-        margin-bottom: 5px;
+        margin-bottom: 3px;
     }
 
     .volume {
